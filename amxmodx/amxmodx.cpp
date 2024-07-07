@@ -4114,30 +4114,20 @@ static cell AMX_NATIVE_CALL LibraryExists(AMX *amx, cell *params)
 	return FindLibrary(library, static_cast<LibType>(params[2]));
 }
 
-static cell AMX_NATIVE_CALL set_fail_state(AMX *amx, cell *params)
+static cell AMX_NATIVE_CALL set_fail_state(AMX *amx, cell *params) /* 1 param */
 {
 	int len;
-	char* str;
+	g_langMngr.SetDefLang(LANG_SERVER);			// Default language = server
+	char* message = format_amxstring(amx, params, 1, len);
 
-	g_langMngr.SetDefLang(LANG_SERVER);	// Default language = server
+	if (len > 254)
+		len = 254;
 
-	if (params[0] / sizeof(cell) > 1)
-		str = format_amxstring(amx, params, 1, len);
-	else
-		str = get_amxstring(amx, params[1], 0, len);
+	message[len++] = '\n';
+	message[len] = 0;
+	SERVER_PRINT(message);
 
-	CPluginMngr::CPlugin *pPlugin = g_plugins.findPluginFast(amx);
-
-	pPlugin->setStatus(ps_error);
-	pPlugin->setError(str);
-
-	AMXXLOG_Error("[AMXX] Plugin (\"%s\") is setting itself as failed.", pPlugin->getName());
-	AMXXLOG_Error("[AMXX] Plugin says: %s", str);
-
-	LogError(amx, AMX_ERR_EXIT, NULL);
-
-	//plugin dies once amx_Exec concludes
-	return 0;
+	return len;
 }
 
 static cell AMX_NATIVE_CALL get_var_addr(AMX *amx, cell *params)
