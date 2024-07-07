@@ -115,5 +115,5 @@ jobs:
         id: upload-job
         with:
           name: linux32
-          path: build/*
+          path: /home/runner/work/amxmodx/build/*
           
