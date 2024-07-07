@@ -115,5 +115,5 @@ jobs:
         id: upload-job
         with:
           name: linux32
-          path: ./packages/base/addons/amxmodx/dlls/
+          path: modules/*
           
