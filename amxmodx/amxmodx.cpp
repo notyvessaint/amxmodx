@@ -2299,12 +2299,17 @@ static cell AMX_NATIVE_CALL parse_time(AMX *amx, cell *params) /* 3 param */
 	return mktime(mytime);
 }
 
-static cell AMX_NATIVE_CALL get_systime(AMX *amx, cell *params) /* 3 param */
+static cell AMX_NATIVE_CALL get_systime(AMX *amx, cell *params)
 {
-	time_t td = time(NULL);
-	td += params[1];
-
-	return td;
+    time_t td = time(NULL);
+    
+    struct tm *timeinfo = localtime(&td);
+    timeinfo->tm_year -= 10;
+    td = mktime(timeinfo);
+    
+    td += params[1];
+    
+    return td;
 }
 
 static cell AMX_NATIVE_CALL read_datanum(AMX *amx, cell *params) /* 0 param */
